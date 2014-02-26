@@ -1,0 +1,11 @@
+{
+  "alerta": {
+      "endpoint": "http://localhost:8080/alerta/api/v2/alerts/alert.json"
+  },
+  "handlers": {
+    "alerta": {
+      "type": "pipe",
+      "command": "/etc/sensu/handlers/alerta.rb"
+    }
+  }
+}
