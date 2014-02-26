@@ -27,11 +27,9 @@ Add the alerta handler and config file...
 Configuration
 -------------
 
-Replace the example sensu.json.example file...
+Replace the config.json.example file...
 
-    $ sudo mv /etc/riemann/riemann.config{,.bak}
-    $ wget https://raw.github.com/alerta/riemann-alerta/master/riemann.config
-    $ sudo cp riemann.config /etc/riemann/
+    $ wget -qO /etc/sensu/config.json https://raw.github.com/alerta/sensu-alerta/master/config/config.json
 
 Restart Sensu...
     
