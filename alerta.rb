@@ -43,17 +43,19 @@ class Alerta < Sensu::Handler
       "event" => "#{@event['check']['name']}",
       "group" => "Sensu",
       "severity" => "#{status_to_severity}",
-      "environment" => [ environment ],
+      "environment" => environment,
       "service" => @event['client']['subscriptions'],
-      "tags" => {
-        "subscribers" => "#{@event['check']['subscribers'].join(",")}",
-        "handler" => "#{@event['check']['handler']}"
-      },
+      "tags" => [
+        "handler=#{@event['check']['handler']}",
+      ],
       "text" => "#{@event['check']['output']}",
       "summary" => "#{action_to_string} - #{short_name}",
       "value" => "",
       "type" => "sensuAlert",
-      "thresholdInfo" => "#{@event['action']}: #{@event['check']['command']}",
+      "attributes" => {
+        "subscribers" => "#{@event['check']['subscribers'].join(",")}",
+        "thresholdInfo" => "#{@event['action']}: #{@event['check']['command']}"
+      },
       "rawData" => "#{@event.to_json}"
     }.to_json
     # puts payload
