@@ -1,6 +1,7 @@
 {
   "alerta": {
-      "endpoint": "http://localhost:8080/api/alert"
+      "endpoint": "http://localhost:8080",
+      "key": ""
   },
   "handlers": {
     "alerta": {

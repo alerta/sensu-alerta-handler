@@ -5,11 +5,11 @@ Forward Sensu events to Alerta for a consolidated view and improved visualisatio
 
 Transform this ...
 
-![sensu](/docs/images/sensu.png?raw=true)
+![sensu](/docs/images/sensu-alerta-v3.png?raw=true)
 
 Into this ...
 
-![alerta](/docs/images/alerta.png?raw=true)
+![alerta](/docs/images/sensu-uchiwa.png?raw=true)
 
 
 Installation
@@ -57,4 +57,4 @@ Alternatively, make use of the [vagrant-try-alerta](https://github.com/alerta/va
 License
 -------
 
-Copyright (c) 2013 Nick Satterly. Available under the MIT License.
+Copyright (c) 2014 Nick Satterly. Available under the MIT License.
