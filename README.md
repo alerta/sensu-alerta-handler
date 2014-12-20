@@ -5,11 +5,11 @@ Forward Sensu events to Alerta for a consolidated view and improved visualisatio
 
 Transform this ...
 
-![sensu](/docs/images/sensu-alerta-v3.png?raw=true)
+![sensu](/docs/images/sensu-uchiwa.png?raw=true)
 
 Into this ...
 
-![alerta](/docs/images/sensu-uchiwa.png?raw=true)
+![alerta](/docs/images/sensu-alerta-v3.png?raw=true)
 
 
 Installation
