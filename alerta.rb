@@ -40,6 +40,7 @@ class Alerta < Sensu::Handler
     hostname = Socket.gethostname
 
     environment = @event['check']['environment'] || 'Production'
+    subscribers = @event['check']['subscribers'] || []
 
     payload = {
       "origin" => "sensu/#{hostname}",
@@ -57,7 +58,7 @@ class Alerta < Sensu::Handler
       "value" => "",
       "type" => "sensuAlert",
       "attributes" => {
-        "subscribers" => "#{@event['check']['subscribers'].join(",")}",
+        "subscribers" => "#{subscribers.join(",")}",
         "thresholdInfo" => "#{@event['action']}: #{@event['check']['command']}"
       },
       "rawData" => "#{@event.to_json}"
