@@ -58,7 +58,7 @@ class Alerta < Sensu::Handler
       "value" => "",
       "type" => "sensuAlert",
       "attributes" => {
-        "subscribers" => "subscribers.join(",")}",
+        "subscribers" => "#{subscribers.join(",")}",
         "thresholdInfo" => "#{@event['action']}: #{@event['check']['command']}"
       },
       "rawData" => "#{@event.to_json}"
