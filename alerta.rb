@@ -27,7 +27,7 @@ class Alerta < Sensu::Handler
       when 2
         "critical"
       else
-        "unknown"
+        "indeterminate"
     end
   end
 
