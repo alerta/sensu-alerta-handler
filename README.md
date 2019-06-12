@@ -1,60 +1,55 @@
-Sensu-to-Alerta
-===============
+# Sensu Go Alerta Handler
+[![Bonsai Asset Badge](https://img.shields.io/badge/CHANGEME-Download%20Me-brightgreen.svg?colorB=89C967&logo=sensu)](https://bonsai.sensu.io/assets/CHANGEME/CHANGEME) [![TravisCI Build Status](https://travis-ci.org/alerta/sensu-alerta-handler.svg?branch=master)](https://travis-ci.org/alerta/sensu-alerta-handler)
 
-Forward Sensu events to Alerta for a consolidated view and improved visualisation.
+Forward Sensu events to Alerta.
 
-Transform this ...
+## Installation
 
-![sensu](/docs/images/sensu-uchiwa.png?raw=true)
+Download the latest version of the sensu-alerta-handler from [releases][1],
+or create an executable script from this source.
 
-Into this ...
+From the local path of the sensu-alerta-handler repository:
 
-![alerta](/docs/images/sensu-alerta-v3.png?raw=true)
+```
+go build -o /usr/local/bin/sensu-alerta-handler main.go
+```
 
+## Configuration
 
-Installation
-------------
+Example Sensu Go handler definition:
 
-To install the Sensu Plugin libary and dependencies...
+```json
+{
+    "api_version": "core/v2",
+    "type": "Handler",
+    "metadata": {
+        "namespace": "default",
+        "name": "alerta"
+    },
+    "spec": {
+        "...": "..."
+    }
+}
+```
 
-    $ gem install sensu-plugin httparty
+## Usage Examples
 
-Add the alerta handler and config file...
+Help:
 
-    $ wget -qO /etc/sensu/handlers/alerta.rb https://raw.github.com/alerta/sensu-alerta/master/alerta.rb
-    $ wget -qO /etc/sensu/conf.d/alerta.json https://raw.github.com/alerta/sensu-alerta/master/alerta.json
+```
+The Sensu Go Alerta handler for event forwarding
 
-Configuration
--------------
+Usage:
+  sensu-alerta-handler [flags]
 
-Replace the config.json.example file...
+Flags:
+  -K, --api-key string        API key for authenticated access.
+      --endpoint-url string   API endpoint URL.
+  -h, --help                  help for sensu-alerta-handler
+```
 
-    $ wget -qO /etc/sensu/config.json https://raw.github.com/alerta/sensu-alerta/master/config/config.json
+## Contributing
 
-Restart Sensu...
-    
-    $ sudo service sensu-server restart
+See https://github.com/sensu/sensu-go/blob/master/CONTRIBUTING.md
 
-
-Testing
--------
-
-Generate some test alerts by touching and removing a file called `/ok`...
-
-    $ touch /ok
-    $ rm /ok
-
-Vagrant
--------
-
-Alternatively, make use of the [vagrant-try-alerta](https://github.com/alerta/vagrant-try-alerta) repo...
-
-    $ git clone https://github.com/alerta/vagrant-try-alerta.git
-    $ cd vagrant-try-alerta
-    $ vagrant up alerta-sensu
-    $ vagrant ssh alerta-sensu
-
-License
--------
-
-Copyright (c) 2014 Nick Satterly. Available under the MIT License.
+[1]: https://github.com/alerta/sensu-alerta-handler/releases
