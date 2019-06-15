@@ -27,11 +27,15 @@
 
 [[constraint]]
   name = "github.com/sensu/sensu-go"
-  revision = "2daf9d442deec0afd2c6f53c183460e879a10646"
+  version = "5.9.0"
 
 [[constraint]]
   name = "github.com/spf13/cobra"
-  version = "0.0.3"
+  version = "0.0.5"
+
+[[constraint]]
+  name = "github.com/stretchr/testify"
+  version = "1.3.0"
 
 [prune]
   go-tests = true
