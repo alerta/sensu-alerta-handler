@@ -32,4 +32,5 @@ after_deploy:
 
 env:
   global:
-  - secure: KNhfU8YXYxn0UEehOvMZwep/5BoZI0O6NMddt4nABG7sja5uzo1iFudVA648ZENm5pE5M67twKbHBX7iDYDIoDHokebtTAs5yZg8vW3d+XcDAUlImoIvazszK/yjz78FvTjkvCheOhIa65sOpv+Ik4b1b4s5w7NTbJpaE94hC8I=
+  - secure: FRjYqVroQHQjwSoJuQEWoeKgqMD/O/uv694kSK6FGVSXg0mJzRAX5kXBCWQwgkwmFur0U3fRiyFEi1vhtvi5PLZOJtQAWw2OcG0/4us1HFU+vX3IXYcrcgJWWKElHCgBCD44VLj83OL0dNO27DZoZDMzX52nyqSXUf1lAbyCES8=
+
