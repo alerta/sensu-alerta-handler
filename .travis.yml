@@ -30,6 +30,6 @@ after_deploy:
   - bonsai/generate-sha512sum.sh
   - bonsai/github-release-upload.sh github_api_token=$GITHUB_TOKEN repo_slug="$TRAVIS_REPO_SLUG" tag="${TRAVIS_TAG}" filename="dist/$(cat dist/sha512_file)"
 
-#env:
-#  global:
-#  - secure: GITHUB_TOKEN_SECRET
+env:
+  global:
+  - secure: KNhfU8YXYxn0UEehOvMZwep/5BoZI0O6NMddt4nABG7sja5uzo1iFudVA648ZENm5pE5M67twKbHBX7iDYDIoDHokebtTAs5yZg8vW3d+XcDAUlImoIvazszK/yjz78FvTjkvCheOhIa65sOpv+Ik4b1b4s5w7NTbJpaE94hC8I=
