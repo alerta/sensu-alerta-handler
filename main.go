@@ -139,17 +139,17 @@ type Alert struct {
 	Event       string `json:"event"`
 	Environment string `json:"environment"`
 	Severity    string `json:"severity"`
-	Correlate   []string `json:"correlate"`
+	Correlate   []string `json:"correlate,omitempty"`
 	Status      string `json:"status"`
 	Service     []string `json:"service"`
 	Group       string `json:"group"`
 	Value       string `json:"value"`
 	Text        string `json:"text"`
-	Tags        []string `json:"tags"`
-	Attributes  map[string]string `json:"attributes"`
+	Tags        []string `json:"tags,omitempty"`
+	Attributes  map[string]string `json:"attributes,omitempty"`
 	Origin      string `json:"origin"`
 	Type        string `json:"type"`
-	CreateTime  string `json:"createTime"`
+	CreateTime  string `json:"createTime,omitempty"`
 	Timeout     int `json:"timeout"`
 	RawData     string `json:"rawData"`
 }
