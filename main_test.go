@@ -20,7 +20,7 @@ func TestSendAlert(t *testing.T) {
 
 	var apiStub = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		body, _ := ioutil.ReadAll(r.Body)
-		expectedBody := `{"resource":"entity1","event":"check1","environment":"default","severity":"normal","correlate":null,"status":"","service":["Sensu"],"group":"default","value":"","text":"","tags":null,"attributes":null,"origin":"sensu-go/`
+		expectedBody := `{"resource":"entity1","event":"check1","environment":"default","severity":"normal","status":"","service":["Sensu"],"group":"default","value":"","text":"","origin":"sensu-go/`
 		assert.Contains(string(body), expectedBody)
 		w.WriteHeader(http.StatusOK)
 		_, err := w.Write([]byte(`{"status": "ok"}`))
