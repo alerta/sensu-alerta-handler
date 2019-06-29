@@ -61,16 +61,14 @@ func configureRootCommand() *cobra.Command {
 	cmd.Flags().StringVarP(&config.AlertaEndpoint.Value,
 		"endpoint-url",
 		"",
-		os.Getenv("ALERTA_ENDPOINT"),
+		os.Getenv(config.AlertaEndpoint.Env),
 		"API endpoint URL.")
 
 	cmd.Flags().StringVarP(&config.AlertaApiKey.Value,
 		"api-key",
 		"K",
-		os.Getenv("ALERTA_API_KEY"),
+		os.Getenv(config.AlertaApiKey.Env),
 		"API key for authenticated access.")
-
-	_ = cmd.MarkFlagRequired("endpoint-url")
 
 	return cmd
 }
