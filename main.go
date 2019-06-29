@@ -31,8 +31,8 @@ var (
 	stdin  *os.File
 	config = HandlerConfig{
 		// default values
-		AlertaEndpoint: HandlerConfigOption{Path: "endpoint-url", Env: "SENSU_ALERTA_ENDPOINT"},
-		AlertaApiKey:    HandlerConfigOption{Path: "api-key", Env: "SENSU_ALERTA_API_KEY"},
+		AlertaEndpoint: HandlerConfigOption{Path: "endpoint-url", Env: "ALERTA_ENDPOINT"},
+		AlertaApiKey:    HandlerConfigOption{Path: "api-key", Env: "ALERTA_API_KEY"},
 		Timeout:         10,
 		Keyspace:        "sensu.io/plugins/alerta/config",
 	}
