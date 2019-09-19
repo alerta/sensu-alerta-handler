@@ -20,15 +20,16 @@ func TestSendAlert(t *testing.T) {
 
 	var apiStub = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		body, _ := ioutil.ReadAll(r.Body)
-		expectedBody := `{"resource":"entity1","event":"check1","environment":"default","severity":"normal","status":"","service":["Sensu"],"group":"default","value":"","text":"","origin":"sensu-go/`
+		expectedBody := `{"resource":"entity1","event":"check1","environment":"Production","severity":"normal","status":"","service":["Sensu"],"group":"default","value":"","text":"","origin":"sensu-go/`
 		assert.Contains(string(body), expectedBody)
 		w.WriteHeader(http.StatusOK)
 		_, err := w.Write([]byte(`{"status": "ok"}`))
 		require.NoError(t, err)
 	}))
 
-	config.AlertaEndpoint.Value = apiStub.URL
-	config.AlertaApiKey.Value = "demo-key"
+	config.AlertaEndpoint = apiStub.URL
+	config.AlertaAPIKey = "demo-key"
+	config.Environment = "Production"
 	err := sendAlert(event)
 	assert.NoError(err)
 }
@@ -47,7 +48,7 @@ func TestMain(t *testing.T) {
 	require.NoError(t, file.Sync())
 	_, err = file.Seek(0, 0)
 	require.NoError(t, err)
-	stdin = file
+	os.Stdin = file
 	requestReceived := false
 
 	var apiStub = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
