@@ -18,6 +18,8 @@ go build -o /usr/local/bin/sensu-alerta-handler main.go
 
 Example Sensu Go handler definition:
 
+**alerta-handler.json**
+
 ```json
 {
     "api_version": "core/v2",
@@ -27,7 +29,44 @@ Example Sensu Go handler definition:
         "name": "alerta"
     },
     "spec": {
-        "...": "..."
+        "type": "pipe",
+        "command": "sensu-alerta-handler --endpoint-url https://alerta.example.com/api",
+        "env_vars": [
+            "ALERTA_API_KEY=G25k9JR2yoZIcHROQGS477nk_Riw4CIghFC6j9NE"
+        ],
+
+        "timeout": 30,
+        "filters": [
+            "is_incident"
+        ]
+    }
+}
+```
+
+Create the handler resource:
+
+    $ sensuctl create -f alerta-handler.json
+
+Example Sensu Go check definition:
+
+```
+{
+    "api_version": "core/v2",
+    "type": "CheckConfig",
+    "metadata": {
+        "namespace": "default",
+        "name": "dummy-app-healthz"
+    },
+    "spec": {
+        "command": "check-http -u http://localhost:8080/healthz",
+        "subscriptions":[
+            "dummy"
+        ],
+        "publish": true,
+        "interval": 10,
+        "handlers": [
+            "alerta"
+        ]
     }
 }
 ```
