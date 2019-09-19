@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [1.1.0] - 2019-09-20
+
+### Added
+- Add support for environment config setting
+
+### Updated
+- Use new Sensu plugin library
+
 ## [1.0.0] - 2019-06-16
 
 ### Added
