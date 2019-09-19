@@ -17,3 +17,5 @@ vendor/
 # deploy
 bonsai/
 dist/
+
+sensu-alerta-handler

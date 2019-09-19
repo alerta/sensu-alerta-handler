@@ -82,8 +82,9 @@ Usage:
   sensu-alerta-handler [flags]
 
 Flags:
-  -K, --api-key string        API key for authenticated access.
-      --endpoint-url string   API endpoint URL.
+  -K, --api-key string        API key for authenticated access
+      --endpoint-url string   API endpoint URL (default "http://localhost:8080")
+  -E, --environment string    Environment eg. Production, Development (default "Entity Namespace")
   -h, --help                  help for sensu-alerta-handler
 ```
 

@@ -5,133 +5,81 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
-	"path"
 	"net/http"
 
-	"github.com/sensu/sensu-go/types"
-	"github.com/spf13/cobra"
+	corev2 "github.com/sensu/sensu-go/api/core/v2"
+	"github.com/sensu/sensu-plugins-go-library/sensu"
+)
+// HandlerConfig represents plugin configuration settings.
+type HandlerConfig struct {
+	sensu.PluginConfig
+	AlertaEndpoint       string
+	AlertaAPIKey         string
+	Environment          string
+}
+
+const (
+	endpointURL = "endpoint-url"
+	apiKey      = "api-key"
+	environment = "environment"
+
+	defaultEndpointURL string = "http://localhost:8080"
 )
 
-type HandlerConfigOption struct {
-	Value string
-	Path  string
-	Env   string
-}
-
-type HandlerConfig struct {
-	AlertaEndpoint  HandlerConfigOption
-	AlertaApiKey    HandlerConfigOption
-	Timeout         int
-	Keyspace        string
-}
-
 var (
-	stdin  *os.File
 	config = HandlerConfig{
-		// default values
-		AlertaEndpoint: HandlerConfigOption{Path: "endpoint-url", Env: "ALERTA_ENDPOINT"},
-		AlertaApiKey:    HandlerConfigOption{Path: "api-key", Env: "ALERTA_API_KEY"},
-		Timeout:         10,
-		Keyspace:        "sensu.io/plugins/alerta/config",
+		PluginConfig: sensu.PluginConfig{
+			Name:     "sensu-alerta-handler",
+			Short:    "The Sensu Go Alerta handler for event forwarding",
+			Timeout:  10,
+			Keyspace: "sensu.io/plugins/alerta/config",
+		},
 	}
-	options = []*HandlerConfigOption{
-		// iterable slice of user-overridable configuration options
-		&config.AlertaEndpoint,
-		&config.AlertaApiKey,
+
+	alertaConfigOptions = []*sensu.PluginConfigOption{
+		{
+			Path:      endpointURL,
+			Env:       "ALERTA_ENDPOINT",
+			Argument:  endpointURL,
+			Shorthand: "",
+			Default:   defaultEndpointURL,
+			Usage:     "API endpoint URL",
+			Value:     &config.AlertaEndpoint,
+		},
+		{
+			Path:      apiKey,
+			Env:       "ALERTA_API_KEY",
+			Argument:  apiKey,
+			Shorthand: "K",
+			Default:   "",
+			Usage:     "API key for authenticated access",
+			Value:     &config.AlertaAPIKey,
+		},
+		{
+			Path:      environment,
+			Argument:  environment,
+			Shorthand: "E",
+			Default:   "Entity Namespace",
+			Usage:     "Environment eg. Production, Development",
+			Value:     &config.Environment,
+		},
 	}
 )
 
 func main() {
-	rootCmd := configureRootCommand()
-	if err := rootCmd.Execute(); err != nil {
-		fmt.Fprintf(os.Stderr, "error: %v\n", err)
-		os.Exit(1)
-	}
+  goHandler := sensu.NewGoHandler(&config.PluginConfig, alertaConfigOptions, checkArgs, sendAlert)
+  goHandler.Execute()
 }
 
-func configureRootCommand() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "sensu-alerta-handler",
-		Short: "The Sensu Go Alerta handler for event forwarding",
-		RunE:  run,
-	}
-
-	cmd.Flags().StringVarP(&config.AlertaEndpoint.Value,
-		"endpoint-url",
-		"",
-		os.Getenv(config.AlertaEndpoint.Env),
-		"API endpoint URL.")
-
-	cmd.Flags().StringVarP(&config.AlertaApiKey.Value,
-		"api-key",
-		"K",
-		os.Getenv(config.AlertaApiKey.Env),
-		"API key for authenticated access.")
-
-	return cmd
-}
-
-func run(cmd *cobra.Command, args []string) error {
-	if len(args) != 0 {
-		_ = cmd.Help()
-		return fmt.Errorf("invalid argument(s) received")
-	}
-
-	if stdin == nil {
-		stdin = os.Stdin
-	}
-
-	eventJSON, err := ioutil.ReadAll(stdin)
-	if err != nil {
-		return fmt.Errorf("failed to read stdin: %s", err)
-	}
-
-	event := &types.Event{}
-	err = json.Unmarshal(eventJSON, event)
-	if err != nil {
-		return fmt.Errorf("failed to unmarshal stdin data: %s", err)
-	}
-
-	if config.AlertaEndpoint.Value == "" {
-		_ = cmd.Help()
-		return fmt.Errorf("API endpoint URL is empty")
-	}
-
-	configurationOverrides(&config, options, event)
-
-	if err = event.Validate(); err != nil {
-		return fmt.Errorf("failed to validate event: %s", err)
-	}
-
+func checkArgs(event *corev2.Event) error {
 	if !event.HasCheck() {
 		return fmt.Errorf("event does not contain check")
 	}
-
-	return sendAlert(event)
+	return nil
 }
 
-func configurationOverrides(config *HandlerConfig, options []*HandlerConfigOption, event *types.Event) {
-	if config.Keyspace == "" {
-		return
-	}
-	for _, opt := range options {
-		if opt.Path != "" {
-			// compile the Annotation keyspace to look for configuration overrides
-			k := path.Join(config.Keyspace, opt.Path)
-			switch {
-			case event.Check.Annotations[k] != "":
-				opt.Value = event.Check.Annotations[k]
-				log.Printf("Overriding default handler configuration with value of \"Check.Annotations.%s\" (\"%s\")\n", k, event.Check.Annotations[k])
-			case event.Entity.Annotations[k] != "":
-				opt.Value = event.Entity.Annotations[k]
-				log.Printf("Overriding default handler configuration with value of \"Entity.Annotations.%s\" (\"%s\")\n", k, event.Entity.Annotations[k])
-			}
-		}
-	}
-}
-
+// Alert represents an event to be sent to Alerta.
 type Alert struct {
 	Resource    string `json:"resource"`
 	Event       string `json:"event"`
@@ -152,7 +100,9 @@ type Alert struct {
 	RawData     string `json:"rawData"`
 }
 
-func eventSeverity(event *types.Event) string {
+// TODO(satterly) could make these severity lookups configurable
+
+func eventSeverity(event *corev2.Event) string {
 	switch event.Check.Status {
 	case 0:
 		return "normal"
@@ -163,12 +113,17 @@ func eventSeverity(event *types.Event) string {
 	}
 }
 
-func sendAlert(event *types.Event) error {
+func sendAlert(event *corev2.Event) error {
+	environment := config.Environment
+	if environment == "" {
+		environment = event.Entity.Namespace
+	}
+
 	hostname, _ := os.Hostname()
 	data := &Alert{
 		Resource: event.Entity.Name,
 		Event: event.Check.Name,
-		Environment: event.Entity.Namespace,
+		Environment: environment,
 		Severity: eventSeverity(event),
 		Service: []string{"Sensu"},
 		Group: event.Check.Namespace,
@@ -185,7 +140,7 @@ func sendAlert(event *types.Event) error {
 	if err != nil {
 		return err
 	}
-	url := fmt.Sprintf("%s/alert?api-key=%s", config.AlertaEndpoint.Value, config.AlertaApiKey.Value )
+	url := fmt.Sprintf("%s/alert?api-key=%s", config.AlertaEndpoint, config.AlertaAPIKey)
 
 	resp, err := http.Post(url, "application/json", buf)
 	if err != nil {
