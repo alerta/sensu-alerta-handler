@@ -7,6 +7,8 @@ install:
   - go get github.com/sensu/sensu-plugins-go-library/sensu
   - go get github.com/stretchr/testify/assert
   - go get github.com/golangci/golangci-lint/cmd/golangci-lint
+  - go get github.com/inconshreveable/mousetrap
+  - go get github.com/konsorten/go-windows-terminal-sequences
 
 env:
   - GO111MODULE=on
