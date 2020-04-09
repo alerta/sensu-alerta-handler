@@ -60,7 +60,7 @@ var (
 			Path:      environment,
 			Argument:  environment,
 			Shorthand: "E",
-			Default:   "Entity Namespace",
+			Default:   "",
 			Usage:     "Environment eg. Production, Development",
 			Value:     &config.Environment,
 		},
