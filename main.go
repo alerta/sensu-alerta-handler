@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"os"
 	"net/http"
+	"strings"
 
 	corev2 "github.com/sensu/sensu-go/api/core/v2"
 	"github.com/sensu/sensu-plugins-go-library/sensu"
@@ -119,6 +120,22 @@ func sendAlert(event *corev2.Event) error {
 		environment = event.Entity.Namespace
 	}
 
+	var attributes = make(map[string]string)
+	for key, value := range event.Entity.Labels {
+		if !strings.ContainsAny(key, ".$") {
+			attributes[key] = value
+		}
+	}
+	for key, value := range event.Check.Labels {
+		if !strings.ContainsAny(key, ".$") {
+			if _, ok := attributes[key]; ok {
+				attributes[key] = attributes[key] + "/" + value
+			} else {
+				attributes[key] = value
+			}
+		}
+	}
+
 	hostname, _ := os.Hostname()
 	data := &Alert{
 		Resource: event.Entity.Name,
@@ -129,7 +146,7 @@ func sendAlert(event *corev2.Event) error {
 		Group: event.Check.Namespace,
 		Value: event.Check.State,
 		Text: event.Check.Output,
-		Attributes: event.Entity.Labels,
+		Attributes: attributes,
 		Origin: fmt.Sprintf("sensu-go/%s", hostname),
 		Type: "sensuAlert",
 		RawData: event.Entity.String(),
