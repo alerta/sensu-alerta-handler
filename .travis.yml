@@ -1,24 +1,16 @@
 language: go
 go:
-- 1.11.x
+  - 1.14.x
 
 install:
-  - go get github.com/sensu/sensu-go/api/core/v2
-  - go get github.com/sensu/sensu-plugins-go-library/sensu
-  - go get github.com/stretchr/testify/assert
-  - go get github.com/golangci/golangci-lint/cmd/golangci-lint
-  - go get github.com/inconshreveable/mousetrap
-  - go get github.com/konsorten/go-windows-terminal-sequences
-
-env:
-  - GO111MODULE=on
+  - curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.27.0
 
 script:
-- golangci-lint run --disable-all --enable=vet --enable=ineffassign --enable=goconst --tests ./...
-- go test -v -race ./...
+  - golangci-lint run --disable-all --enable=vet --enable=ineffassign --enable=goconst --tests ./...
+  - go test -v -race ./...
 
 before_script:
-- echo "REPO $TRAVIS_REPO_SLUG TAG ${TRAVIS_TAG}"
+  - echo "REPO $TRAVIS_REPO_SLUG TAG $TRAVIS_TAG"
 
 deploy:
   - #goreleaser
@@ -32,9 +24,8 @@ deploy:
 after_deploy:
   - git clone https://github.com/sensu/sensu-go-bonsai-asset.git bonsai
   - bonsai/generate-sha512sum.sh
-  - bonsai/github-release-upload.sh github_api_token=$GITHUB_TOKEN repo_slug="$TRAVIS_REPO_SLUG" tag="${TRAVIS_TAG}" filename="dist/$(cat dist/sha512_file)"
+  - bonsai/github-release-upload.sh github_api_token=$GITHUB_TOKEN repo_slug="$TRAVIS_REPO_SLUG" tag="$TRAVIS_TAG" filename="dist/$(cat dist/sha512_file)"
 
 env:
   global:
   - secure: FRjYqVroQHQjwSoJuQEWoeKgqMD/O/uv694kSK6FGVSXg0mJzRAX5kXBCWQwgkwmFur0U3fRiyFEi1vhtvi5PLZOJtQAWw2OcG0/4us1HFU+vX3IXYcrcgJWWKElHCgBCD44VLj83OL0dNO27DZoZDMzX52nyqSXUf1lAbyCES8=
-
