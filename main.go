@@ -121,18 +121,16 @@ func sendAlert(event *corev2.Event) error {
 	}
 
 	var attributes = make(map[string]string)
+	// Alerta does not allow periods or dollar symbols in attribute names
+	var replacer = strings.NewReplacer(".", "_", "$", "_")
 	for key, value := range event.Entity.Labels {
-		if !strings.ContainsAny(key, ".$") {
-			attributes[key] = value
-		}
+		attributes[replacer.Replace(key)] = value
 	}
 	for key, value := range event.Check.Labels {
-		if !strings.ContainsAny(key, ".$") {
-			if _, ok := attributes[key]; ok {
-				attributes[key] = attributes[key] + "/" + value
-			} else {
-				attributes[key] = value
-			}
+		if _, ok := attributes[replacer.Replace(key)]; ok {
+			attributes[replacer.Replace(key)] = attributes[replacer.Replace(key)] + "/" + value
+		} else {
+			attributes[replacer.Replace(key)] = value
 		}
 	}
 
