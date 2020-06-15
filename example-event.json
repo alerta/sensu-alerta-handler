@@ -1,4 +1,5 @@
 {
+  "timestamp": 1460172826,
   "entity": {
     "entity_class": "agent",
     "system": {
@@ -58,7 +59,9 @@
     "metadata": {
       "name": "webserver01",
       "namespace": "default",
-      "labels": null,
+      "labels": {
+        "test_attribute": "label-value-entity1"
+      },
       "annotations": {
         "sensu.io/plugins/segp/config/path1": "value-entity1",
         "sensu.io/plugins/segp/config/path2": "2468",
@@ -106,7 +109,10 @@
     "metadata": {
       "name": "check-nginx",
       "namespace": "default",
-      "labels": null,
+      "labels": {
+        "sensu.io/managed_by": "sensuctl",
+        "test_attribute": "label-value-check1"
+      },
       "annotations": {
         "sensu.io/plugins/segp/config/path1": "value-check1",
         "sensu.io/plugins/segp/config/path2": "1357",
