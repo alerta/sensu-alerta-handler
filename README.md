@@ -1,5 +1,6 @@
 # Sensu Go Alerta Handler
-[![Bonsai Asset Badge](https://img.shields.io/badge/Bonsai-Download%20Me-brightgreen.svg?colorB=89C967&logo=sensu)](https://bonsai.sensu.io/assets/alerta/sensu-alerta-handler) [![TravisCI Build Status](https://travis-ci.com/alerta/sensu-alerta-handler.svg?branch=master)](https://travis-ci.com/alerta/sensu-alerta-handler)
+
+[![Bonsai Asset Badge](https://img.shields.io/badge/Bonsai-Download%20Me-brightgreen.svg?colorB=89C967&logo=sensu)](https://bonsai.sensu.io/assets/alerta/sensu-alerta-handler) [![build-test](https://github.com/alerta/sensu-alerta-handler/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/alerta/sensu-alerta-handler/actions/workflows/test.yml)
 
 Forward Sensu events to Alerta.
 
